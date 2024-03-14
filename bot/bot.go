@@ -43,7 +43,7 @@ func createSession() (s *discordgo.Session, err error) {
 	session.AddHandler(guildCreate)
 	session.AddHandler(messageCreate)
 	session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-
+		// TODO: add switch statement for different interactions
 	})
 
 	// Initiate websocker connection with Discord
