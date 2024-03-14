@@ -1,0 +1,20 @@
+services:
+  bot:
+    build: 
+      dockerfile: docker/Dockerfile
+    ports: 
+      - 22020:8080
+    volumes:
+      - .:/code
+  db:
+    image: postgres:13.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: guildmaster
+    ports:
+      - 22021:5432
+    volumes:
+      - db_data:/var/lib/postgresql/data
+volumes:
+  db_data:
