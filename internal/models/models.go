@@ -1,7 +1,7 @@
 package models
 
 import (
-	"guildmaster/config"
+	"guildmaster/internal/config"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

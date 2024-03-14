@@ -1,7 +1,7 @@
 package main
 
 import (
-	"guildmaster/bot"
+	"guildmaster/internal/bot"
 
 	log "github.com/sirupsen/logrus"
 )

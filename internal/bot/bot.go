@@ -2,7 +2,7 @@ package bot
 
 import (
 	"fmt"
-	"guildmaster/config"
+	"guildmaster/internal/config"
 	"os"
 	"os/signal"
 	"syscall"

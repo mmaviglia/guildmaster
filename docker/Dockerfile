@@ -10,7 +10,7 @@ RUN go mod download
 ADD . .
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux go build -o /guildmaster
+RUN CGO_ENABLED=0 GOOS=linux go build -o /guildmaster ./cmd
 
 EXPOSE 8080
 
