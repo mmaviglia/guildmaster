@@ -31,6 +31,7 @@ func migrateDatabase() error {
 	return DB.AutoMigrate()
 }
 
+// Calculate the offset using the limit and page.
 func offset(limit, page int) int {
 	return (page - 1) * limit
 }
