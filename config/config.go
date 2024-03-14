@@ -1,18 +1,9 @@
 package config
 
-import "os"
+import (
+	"github.com/gobuffalo/envy"
+)
 
-var DB_DSN = getEnv("DB_DSN", "")
-var DISCORD_TOKEN = getEnv("DISCORD_TOKEN", "")
-var ENV = getEnv("GO_ENV", "development")
-
-// Get the environment variable associated with the key. If it
-// does not exist, return value.
-func getEnv(key, value string) string {
-	v, ok := os.LookupEnv(key)
-	if !ok {
-		return value
-	}
-
-	return v
-}
+var DB_DSN = envy.Get("DB_DSN", "")
+var DISCORD_TOKEN = envy.Get("DISCORD_TOKEN", "")
+var ENV = envy.Get("GO_ENV", "development")
