@@ -28,7 +28,7 @@ func SetupDB() error {
 // Run migrations for all models.
 func migrateDatabase() error {
 	// Add all database models to this call
-	return DB.AutoMigrate()
+	return DB.AutoMigrate(GuildActivity{})
 }
 
 // Calculate the offset using the limit and page.
