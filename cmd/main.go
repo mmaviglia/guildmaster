@@ -12,6 +12,7 @@ func main() {
 
 	if err := models.SetupDB(); err != nil {
 		log.Error(err)
+		return
 	}
 
 	if err := bot.Run(); err != nil {
