@@ -17,5 +17,6 @@ func main() {
 
 	if err := bot.Run(); err != nil {
 		log.Error(err)
+		return
 	}
 }
