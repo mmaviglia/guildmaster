@@ -6,6 +6,10 @@ services:
       - 22020:8080
     volumes:
       - .:/code
+    environment:
+      DB_DSN: "postgres://postgres:postgres@db:5432/guildmaster"
+    depends_on:
+      - db
   db:
     image: postgres:13.3
     environment:
@@ -16,5 +20,11 @@ services:
       - 22021:5432
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "guildmaster", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   db_data:
