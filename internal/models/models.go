@@ -2,6 +2,7 @@ package models
 
 import (
 	"guildmaster/internal/config"
+	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -11,12 +12,24 @@ var DB *gorm.DB
 
 // Establish a connection to the database and run all migrations.
 func SetupDB() error {
-	db, err := gorm.Open(postgres.Open(config.DB_DSN), &gorm.Config{})
-	if err != nil {
-		return err
-	}
 
-	DB = db
+	// Attempt to establish the database connection, retrying if necessary
+	attempts := 0
+	for {
+		attempts++
+
+		db, err := gorm.Open(postgres.Open(config.DB_DSN), &gorm.Config{})
+		if err != nil {
+			if attempts < 10 {
+				time.Sleep(time.Second)
+				continue
+			}
+			return err
+		}
+
+		DB = db
+		break
+	}
 
 	if err := migrateDatabase(); err != nil {
 		return err
