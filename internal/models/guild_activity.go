@@ -1,9 +1,11 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/gofrs/uuid"
+	"gorm.io/gorm"
 )
 
 // A user's activity within a particular guild.
@@ -16,14 +18,47 @@ type GuildActivity struct {
 }
 
 // Return the guild activity using the user and guild ID strings.
-func GetGuildActivity(userID string, guildID string) (*GuildActivity, error) {
+func GetGuildActivity(userID, guildID string) (*GuildActivity, error) {
 	m := &GuildActivity{}
-
-	return m, DB.Find(m, "user_id = ? AND guild_id = ?", userID, guildID).Error
+	return m, DB.Find(m, "id = ?", guildActivityID(userID, guildID)).Error
 }
 
 // Return the guild activity using the UUID primary key.
 func GetGuildActivityByID(id uuid.UUID) (*GuildActivity, error) {
 	m := &GuildActivity{}
 	return m, DB.First(m, "id = ?", id).Error
+}
+
+// Increment the number of messages sent by the user within the given guild.
+func IncrementMessagesSent(userID, guildID string) error {
+	tx := DB.Model(&GuildActivity{}).Where("id = ?", guildActivityID(userID, guildID))
+	result := tx.UpdateColumn("messages_sent", gorm.Expr("messages_sent + 1"))
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		err := CreateGuildActivity(&GuildActivity{
+			UserID:       userID,
+			GuildID:      guildID,
+			MessagesSent: 1,
+		})
+		if err != nil {
+			return fmt.Errorf("create guild activity: %w", err)
+		}
+	}
+
+	return nil
+}
+
+// Create a GuildActivity record in the database.
+func CreateGuildActivity(activity *GuildActivity) error {
+	activity.ID = guildActivityID(activity.UserID, activity.GuildID)
+	return DB.Create(activity).Error
+}
+
+// Return the ID of a GuildActivity record based on the user and guild IDs.
+func guildActivityID(userID, guildID string) uuid.UUID {
+	return uuid.NewV5(namespace, fmt.Sprintf(userID+guildID))
 }

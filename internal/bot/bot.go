@@ -3,6 +3,7 @@ package bot
 import (
 	"fmt"
 	"guildmaster/internal/config"
+	"guildmaster/internal/models"
 	"os"
 	"os/signal"
 	"syscall"
@@ -75,5 +76,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// ignore all messages from the bot itself, and those that do not have the command prefix
 	if m.Author.ID == s.State.User.ID {
 		return
+	}
+
+	if err := models.IncrementMessagesSent(m.Author.ID, m.GuildID); err != nil {
+		log.Error(err)
 	}
 }
