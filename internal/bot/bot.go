@@ -66,9 +66,7 @@ func guildCreate(s *discordgo.Session, event *discordgo.GuildCreate) {
 		return
 	}
 
-	log.Infof("Added to Guild: %v\n", event.Guild.Name)
-
-	s.GuildMemberNickname(event.Guild.ID, "@me", "Guildmaster")
+	log.Infof("Connected to Guild: %v\n", event.Guild.Name)
 }
 
 // Called any time a message is posted in a channel the bot is allowed to see.
