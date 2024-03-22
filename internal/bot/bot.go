@@ -36,6 +36,8 @@ func createSession() (s *discordgo.Session, err error) {
 		return nil, fmt.Errorf("discord new: %w", err)
 	}
 
+	tracker := NewGuildActivityTracker(session)
+
 	// Declare all intents
 	session.Identify.Intents = discordgo.IntentsAll
 
@@ -43,6 +45,9 @@ func createSession() (s *discordgo.Session, err error) {
 	session.AddHandler(ready)
 	session.AddHandler(guildCreate)
 	session.AddHandler(messageCreate)
+	session.AddHandler(func(s *discordgo.Session, v *discordgo.VoiceStateUpdate) {
+		voiceStateUpdate(tracker, s, v)
+	})
 	session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		// TODO: add switch statement for different interactions
 	})
@@ -73,12 +78,26 @@ func guildCreate(s *discordgo.Session, event *discordgo.GuildCreate) {
 // Called any time a message is posted in a channel the bot is allowed to see.
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
-	// ignore all messages from the bot itself, and those that do not have the command prefix
+	// Ignore all messages from the bot itself, and those that do not have the command prefix
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
 
 	if err := models.IncrementMessagesSent(m.Author.ID, m.GuildID); err != nil {
 		log.Error(err)
+	}
+}
+
+// Called any time a voice state updates.
+func voiceStateUpdate(t *GuildActivityTracker, s *discordgo.Session, v *discordgo.VoiceStateUpdate) {
+
+	if v.ChannelID != "" && v.BeforeUpdate == nil {
+		log.Info("joining")
+		t.VoiceChannelJoin(v.UserID)
+	}
+
+	if v.ChannelID == "" && v.BeforeUpdate != nil {
+		log.Info("leaving")
+		t.VoiceChannelLeave(v.UserID, v.GuildID)
 	}
 }
