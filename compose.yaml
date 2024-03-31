@@ -2,6 +2,7 @@ services:
   bot:
     build: 
       dockerfile: docker/Dockerfile
+    image: guildmaster:2024-03-30
     ports: 
       - 22020:8080
     volumes:
