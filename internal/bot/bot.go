@@ -7,10 +7,14 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	log "github.com/sirupsen/logrus"
 )
+
+// The timestamp format required by Discord.
+const ISO8601 = "2006-01-02T15:04:05Z07:00"
 
 // Start the Discord bot.
 func Run() error {
@@ -49,13 +53,21 @@ func createSession() (s *discordgo.Session, err error) {
 		voiceStateUpdate(tracker, s, v)
 	})
 	session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-		// TODO: add switch statement for different interactions
+		switch i.Type {
+		case discordgo.InteractionApplicationCommand:
+			if h, ok := commandHandlers[i.ApplicationCommandData().Name]; ok {
+				h(s, i)
+			}
+		}
 	})
 
 	// Initiate websocker connection with Discord
 	if err := session.Open(); err != nil {
 		return nil, fmt.Errorf("open session: %w", err)
 	}
+
+	// Track uptime from this point forward
+	runningSince = time.Now()
 
 	return session, nil
 }
@@ -73,6 +85,11 @@ func guildCreate(s *discordgo.Session, event *discordgo.GuildCreate) {
 	}
 
 	log.Infof("Connected to Guild: %v\n", event.Guild.Name)
+
+	err := syncServerCommands(s, event.Guild.ID)
+	if err != nil {
+		log.Error(fmt.Errorf("sync server commands: %w", err))
+	}
 }
 
 // Called any time a message is posted in a channel the bot is allowed to see.
@@ -92,12 +109,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 func voiceStateUpdate(t *GuildActivityTracker, s *discordgo.Session, v *discordgo.VoiceStateUpdate) {
 
 	if v.ChannelID != "" && v.BeforeUpdate == nil {
-		log.Info("joining")
 		t.VoiceChannelJoin(v.UserID)
 	}
 
 	if v.ChannelID == "" && v.BeforeUpdate != nil {
-		log.Info("leaving")
 		t.VoiceChannelLeave(v.UserID, v.GuildID)
 	}
 }
