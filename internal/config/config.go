@@ -11,7 +11,7 @@ var DB_DSN = envy.Get("DB_DSN", "")
 var DISCORD_TOKEN = envy.Get("DISCORD_TOKEN", "")
 var ENV = envy.Get("GO_ENV", "development")
 var BOT_EMBED_THUMBNAIL_URL = envy.Get("BOT_EMBED_THUMBNAIL_URL", "")
-var BOT_EMBED_COLOR = mustParseInt(envy.Get("BOT_EMBED_COLOR", ""))
+var BOT_EMBED_COLOR = mustParseInt(envy.Get("BOT_EMBED_COLOR", "0"))
 var BOT_URL = envy.Get("BOT_URL", "")
 
 func mustParseInt(s string) int {
