@@ -1,0 +1,28 @@
+version: "3"
+
+tasks:
+
+  dev:
+    desc: Start the development server
+    deps:
+      - dev:run
+
+  dev:run:
+    deps: [dev:build]
+    cmds: [./tmp/bin/guildmaster]
+    
+  dev:build:
+    desc: Build the development binary
+    sources: ["**/*.go"]
+    deps: [gomod]
+    cmds:
+      - mkdir -p ./tmp/bin
+      - go build -buildvcs=false -o ./tmp/bin/guildmaster ./cmd
+    generates: [./tmp/bin/guildmaster]
+
+  gomod:
+    cmds: [go mod download]
+    run: once
+    sources:
+      - go.mod
+      - go.sum

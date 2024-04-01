@@ -1,0 +1,16 @@
+FROM golang:1.22
+
+# Set destination for COPY
+WORKDIR /code
+
+# Download Go modules
+COPY go.mod go.sum ./
+RUN go mod download
+
+ADD . .
+
+# Install go-task/task, allowing task commands from taskfile.yml
+RUN go install github.com/go-task/task/v3/cmd/task@v3.27.1
+
+ENTRYPOINT []
+CMD ["/bin/bash"]

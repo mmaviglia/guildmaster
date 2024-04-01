@@ -1,8 +1,8 @@
 services:
   bot:
     build: 
-      dockerfile: docker/Dockerfile.development
-    image: guildmaster:2024-04-01
+      dockerfile: docker/Dockerfile.release
+    image: guildmaster:2024-03-30
     ports: 
       - 22020:8080
     volumes:
@@ -11,7 +11,6 @@ services:
       DB_DSN: "postgres://postgres:postgres@db:5432/guildmaster"
     depends_on:
       - db
-    command: task dev --watch
   db:
     image: postgres:13.3
     environment:
