@@ -24,7 +24,7 @@ var commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.Interac
 				Embeds: []*discordgo.MessageEmbed{
 					{
 						Color:       config.BOT_EMBED_COLOR,
-						Description: "Discord bot focused on general functionality.",
+						Description: "Discord bot focused on general functionality and basic leveling mechanics.",
 						Author: &discordgo.MessageEmbedAuthor{
 							Name: s.State.User.Username,
 							URL:  config.BOT_URL,
@@ -34,6 +34,7 @@ var commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.Interac
 						},
 						Timestamp: time.Now().Format(ISO8601),
 						Fields: []*discordgo.MessageEmbedField{
+							{},
 							{
 								Name:   "Servers:",
 								Value:  fmt.Sprintf("%d", len(s.State.Guilds)),
@@ -49,6 +50,7 @@ var commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.Interac
 								Value:  runningDurationString(),
 								Inline: true,
 							},
+							{},
 						},
 					},
 				},

@@ -106,7 +106,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 // Called any time a voice state updates.
-func voiceStateUpdate(t *GuildActivityTracker, s *discordgo.Session, v *discordgo.VoiceStateUpdate) {
+func voiceStateUpdate(t *GuildActivityTracker, _ *discordgo.Session, v *discordgo.VoiceStateUpdate) {
 
 	if v.ChannelID != "" && v.BeforeUpdate == nil {
 		t.VoiceChannelJoin(v.UserID)
