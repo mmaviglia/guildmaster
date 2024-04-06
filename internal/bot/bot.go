@@ -61,7 +61,7 @@ func createSession() (s *discordgo.Session, err error) {
 		}
 	})
 
-	// Initiate websocker connection with Discord
+	// Initiate websocket connection with Discord
 	if err := session.Open(); err != nil {
 		return nil, fmt.Errorf("open session: %w", err)
 	}
