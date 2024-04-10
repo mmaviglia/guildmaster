@@ -1,6 +1,6 @@
 # Guildmaster
 
-Guildmaster is a proof of concept Discord bot written entirely in Go. The purpose of the bot is to track the activity of all users in a server for leveling purposes, including messages sent and time spent within a voice channel. The bot will also notify users upon leveling up, and provide users with a leaderboard to track activity across the server.
+Guildmaster is a proof of concept Discord bot written entirely in Go, using bwmarrin's [DiscordGo](https://github.com/bwmarrin/discordgo) package. The purpose of the bot is to track the activity of all users in a server for leveling purposes, including messages sent and time spent within a voice channel. The bot will also notify users upon leveling up, and provide users with a leaderboard to track activity across the server.
 
 ## Development
 
