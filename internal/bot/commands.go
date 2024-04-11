@@ -82,7 +82,8 @@ var commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.Interac
 						Thumbnail: &discordgo.MessageEmbedThumbnail{
 							URL: config.BOT_EMBED_THUMBNAIL_URL,
 						},
-						Fields: leaderboard,
+						Fields:    leaderboard,
+						Timestamp: time.Now().Format(ISO8601),
 					},
 				},
 			},
