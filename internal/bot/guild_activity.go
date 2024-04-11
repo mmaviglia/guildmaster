@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"fmt"
 	"guildmaster/internal/models"
 	"sync"
 	"time"
@@ -50,4 +51,60 @@ func (tracker *GuildActivityTracker) VoiceChannelLeave(userID string, guildID st
 
 	// Remove user join time from map
 	delete(tracker.vcJoinTimes, userID)
+}
+
+// Return a list of embed fields containing the leaderboard data.
+func GuildLeaderboardFields(s *discordgo.Session, guildID string) ([]*discordgo.MessageEmbedField, error) {
+	activities, err := models.GetGuildActivities(guildID)
+	if err != nil {
+		return nil, fmt.Errorf("get guild activities: %w", err)
+	}
+
+	names, messages, voiceTime := "", "", ""
+	for i, a := range activities {
+		// The leaderboard will show a maximum of 10 members
+		if i == 10 {
+			break
+		}
+		member, err := s.GuildMember(guildID, a.UserID)
+		if err != nil {
+			return nil, fmt.Errorf("get guild member: %w", err)
+		}
+
+		// Display a medal for the top three members; Otherwise their number
+		rank := ""
+		switch i {
+		case 0:
+			rank = "🥇"
+		case 1:
+			rank = "🥈"
+		case 2:
+			rank = "🥉"
+		default:
+			rank = fmt.Sprintf("#%v", i+1)
+		}
+
+		names += fmt.Sprintf("%v - %v\n", rank, member.DisplayName())
+		messages += fmt.Sprintf("%v\n", a.MessagesSent)
+		voiceTime += fmt.Sprintf("%v\n", formatDuration(time.Duration(a.VoiceChannelSeconds)*time.Second))
+	}
+
+	return []*discordgo.MessageEmbedField{
+		{
+			Name:   "Members",
+			Value:  names,
+			Inline: true,
+		},
+		{
+			Name:   "Messages Sent",
+			Value:  messages,
+			Inline: true,
+		},
+		{
+			Name:   "Voice Channel Time",
+			Value:  voiceTime,
+			Inline: true,
+		},
+	}, nil
+
 }

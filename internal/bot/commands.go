@@ -14,6 +14,10 @@ var commands = []*discordgo.ApplicationCommand{
 		Name:        "info",
 		Description: "Displays general information about the bot.",
 	},
+	{
+		Name:        "leaderboard",
+		Description: "Displays the current leaderboard for the server",
+	},
 }
 
 var commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
@@ -24,10 +28,12 @@ var commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.Interac
 				Embeds: []*discordgo.MessageEmbed{
 					{
 						Color:       config.BOT_EMBED_COLOR,
+						Title:       "Info Panel",
 						Description: "Discord bot focused on general functionality and basic leveling mechanics.",
 						Author: &discordgo.MessageEmbedAuthor{
-							Name: s.State.User.Username,
-							URL:  config.BOT_URL,
+							Name:    s.State.User.Username,
+							URL:     config.BOT_URL,
+							IconURL: s.State.User.AvatarURL(""),
 						},
 						Thumbnail: &discordgo.MessageEmbedThumbnail{
 							URL: config.BOT_EMBED_THUMBNAIL_URL,
@@ -52,6 +58,31 @@ var commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.Interac
 							},
 							{},
 						},
+					},
+				},
+			},
+		})
+		if err != nil {
+			log.Error(err)
+		}
+	},
+	"leaderboard": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		leaderboard, err := GuildLeaderboardFields(s, i.GuildID)
+		if err != nil {
+			log.Error(fmt.Errorf("guild leaderboard fields: %w", err))
+		}
+		err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Embeds: []*discordgo.MessageEmbed{
+					{
+						Color:       config.BOT_EMBED_COLOR,
+						Title:       "Leaderboard",
+						Description: "Members in the server are ranked by their overall XP.",
+						Thumbnail: &discordgo.MessageEmbedThumbnail{
+							URL: config.BOT_EMBED_THUMBNAIL_URL,
+						},
+						Fields: leaderboard,
 					},
 				},
 			},
