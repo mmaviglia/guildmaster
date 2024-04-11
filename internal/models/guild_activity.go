@@ -29,8 +29,8 @@ func GetGuildActivityByID(id uuid.UUID) (*GuildActivity, error) {
 	return m, DB.First(m, "id = ?", id).Error
 }
 
-// Return the activity records for a particular server, ranked by XP.
-func GetServerLeaderboard(guildID string) ([]GuildActivity, error) {
+// Return the activity records for a particular guild, ranked by XP.
+func GetGuildActivities(guildID string) ([]GuildActivity, error) {
 	activities := []GuildActivity{}
 	tx := DB.Model(&GuildActivity{}).Order("experience DESC").Where("guild_id = ?", guildID)
 
