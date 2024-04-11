@@ -29,37 +29,37 @@ func formatDuration(d time.Duration) string {
 	switch {
 	case years > 0:
 		s := fmt.Sprintf("%d year", years)
-		if years > 1 {
+		if years != 1 {
 			s += "s"
 		}
 		return s
 	case months > 0:
 		s := fmt.Sprintf("%d month", months)
-		if months > 1 {
+		if months != 1 {
 			s += "s"
 		}
 		return s
 	case days > 0:
 		s := fmt.Sprintf("%d day", days)
-		if days > 1 {
+		if days != 1 {
 			s += "s"
 		}
 		return s
 	case hours > 0:
 		s := fmt.Sprintf("%d hour", hours)
-		if hours > 1 {
+		if hours != 1 {
 			s += "s"
 		}
 		return s
 	case minutes > 0:
 		s := fmt.Sprintf("%d minute", minutes)
-		if minutes > 1 {
+		if minutes != 1 {
 			s += "s"
 		}
 		return s
 	default:
 		s := fmt.Sprintf("%d second", seconds)
-		if seconds > 1 {
+		if seconds != 1 {
 			s += "s"
 		}
 		return s
