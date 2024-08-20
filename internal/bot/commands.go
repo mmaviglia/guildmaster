@@ -94,7 +94,7 @@ var commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.Interac
 	},
 }
 
-// Update the Guild's registered application commands to match the codebase.
+// syncServerCommands updates the Guild's registered application commands to match the codebase.
 func syncServerCommands(s *discordgo.Session, guildID string) error {
 	existingCommands, err := s.ApplicationCommands(s.State.User.ID, guildID)
 	if err != nil {

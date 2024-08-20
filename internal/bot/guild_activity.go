@@ -19,14 +19,14 @@ type GuildActivityTracker struct {
 	vcJoinTimes map[string]time.Time
 }
 
-// Create a new instance of GuildActivityTracker.
+// NewGuildActivityTracker creates a new instance of GuildActivityTracker.
 func NewGuildActivityTracker(session *discordgo.Session) *GuildActivityTracker {
 	return &GuildActivityTracker{
 		vcJoinTimes: make(map[string]time.Time),
 	}
 }
 
-// Record the timestamp when a user joins a voice channel.
+// VoiceChannelJoin should be called to record the timestamp when a user joins a voice channel.
 func (tracker *GuildActivityTracker) VoiceChannelJoin(userID string) {
 	tracker.mu.Lock()
 	defer tracker.mu.Unlock()
@@ -34,7 +34,7 @@ func (tracker *GuildActivityTracker) VoiceChannelJoin(userID string) {
 	tracker.vcJoinTimes[userID] = time.Now()
 }
 
-// Updates GuildActivity when a user leaves a voice channel.
+// VoiceChannelLeave should be called to update GuildActivity when a user leaves a voice channel.
 func (tracker *GuildActivityTracker) VoiceChannelLeave(userID string, guildID string) {
 	tracker.mu.Lock()
 	defer tracker.mu.Unlock()
@@ -53,7 +53,7 @@ func (tracker *GuildActivityTracker) VoiceChannelLeave(userID string, guildID st
 	delete(tracker.vcJoinTimes, userID)
 }
 
-// Return a list of embed fields containing the leaderboard data.
+// GuildLeaderboardFields returns a list of embed fields containing the leaderboard data.
 func GuildLeaderboardFields(s *discordgo.Session, guildID string) ([]*discordgo.MessageEmbedField, error) {
 	activities, err := models.GetGuildActivities(guildID)
 	if err != nil {

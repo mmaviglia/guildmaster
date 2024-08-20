@@ -13,10 +13,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// The timestamp format required by Discord.
+// ISO8601 is the timestamp format required by Discord.
 const ISO8601 = "2006-01-02T15:04:05Z07:00"
 
-// Start the Discord bot.
+// Run starts the Discord bot.
 func Run() error {
 	session, err := createSession()
 	if err != nil {
@@ -32,7 +32,7 @@ func Run() error {
 	return session.Close()
 }
 
-// Initiate the connection with Discord with proper intents and handlers added.
+// createSession initiates the connection with Discord with proper intents and handlers added.
 func createSession() (s *discordgo.Session, err error) {
 	// Create a new Discord session using the provided bot token
 	session, err := discordgo.New("Bot " + config.DISCORD_TOKEN)
@@ -72,12 +72,12 @@ func createSession() (s *discordgo.Session, err error) {
 	return session, nil
 }
 
-// Called when the websocket connection with Discord has been successfully opened.
+// ready should be called when the websocket connection with Discord has been successfully opened.
 func ready(s *discordgo.Session, event *discordgo.Ready) {
 	// Add anything that needs to be run on first connection with Discord
 }
 
-// Called whenever the bot initially connects to a guild.
+// guildCreate should be called whenever the bot initially connects to a guild.
 func guildCreate(s *discordgo.Session, event *discordgo.GuildCreate) {
 
 	if event.Guild.Unavailable {
@@ -92,7 +92,7 @@ func guildCreate(s *discordgo.Session, event *discordgo.GuildCreate) {
 	}
 }
 
-// Called any time a message is posted in a channel the bot is allowed to see.
+// messageCreate should be called any time a message is posted in a channel the bot is allowed to see.
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// Ignore all messages from the bot itself, and those that do not have the command prefix
@@ -105,7 +105,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 }
 
-// Called any time a voice state updates.
+// voiceStateUpdate should be called any time a voice state updates.
 func voiceStateUpdate(t *GuildActivityTracker, _ *discordgo.Session, v *discordgo.VoiceStateUpdate) {
 
 	if v.ChannelID != "" && v.BeforeUpdate == nil {

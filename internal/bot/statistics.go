@@ -6,17 +6,17 @@ import (
 	"time"
 )
 
-// The time the bot was started.
+// runningSince represents the time the bot was started.
 var runningSince time.Time
 
-// Return a human readable string containing the time the application has been running.
+// runningDurationString returns a human readable string containing the time the application has been running.
 func runningDurationString() string {
 	uptime := time.Since(runningSince)
 
 	return formatDuration(uptime)
 }
 
-// Format the duration into a human readable string.
+// formatDuration formats the duration into a human readable string.
 func formatDuration(d time.Duration) string {
 	seconds := int(d.Seconds())
 	minutes := int(d.Minutes())
@@ -66,7 +66,7 @@ func formatDuration(d time.Duration) string {
 	}
 }
 
-// Returns a string of the current memory usage of the application.
+// memoryUsageString returns a string of the current memory usage of the application.
 func memoryUsageString() string {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
@@ -76,12 +76,12 @@ func memoryUsageString() string {
 	return fmt.Sprintf("%.2f MB\n", bToMb(m.Alloc))
 }
 
-// Converts bytes to MB.
+// bToMb converts bytes to MB.
 func bToMb(b uint64) float64 {
 	return float64(b) / 1024 / 1024
 }
 
-// Converts bytes to GB.
+// bToGb converts bytes to GB.
 func bToGb(b uint64) float64 {
 	return float64(b) / 1024 / 1024 / 1024
 }
